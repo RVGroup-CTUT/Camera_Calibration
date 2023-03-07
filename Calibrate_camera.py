@@ -72,4 +72,11 @@ for frame_img in allimages:
         print(frame_img)
 
 cv2.destroyAllWindows()
-
+# Determine the new values for different parameters
+mse, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpointsL, grayL.shape[::-1],None,None)
+print('MSE',mse)
+proj_err_L = projectPointsErr(objpoints,imgpointsL, rvecs, tvecs, mtx, dist)
+print("Mean reprojection error: ", mean(proj_err_L))
+print("STD reprojection error: ", stddev(proj_err_R))
+hL,wL= grayL.shape[:2]
+OmtxL, roiL= cv2.getOptimalNewCameraMatrix(mtxL,distL,(wL,hL),1,(wL,hL))
