@@ -32,9 +32,8 @@ def stddev(data):
 image_dir = "IMG_VIEWS"
 current_dir = os.getcwd()
 image_savepath = os.path.join(current_dir, image_dir)
-
-
-
+json_file = "data.json"
+ j = {}
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 # size of chessboard 
 chessboardSize = (10,7)
@@ -55,6 +54,7 @@ for frame_img in allimages:
     imgL_g = cv2.imread(frame_img,0)
     imgL = imgL_g.copy()
     grayL =imgL
+    test_img = imgL_g.copy()
     # Find the chess board corners
     retL, cornersL = cv2.findChessboardCorners(grayL, chessboardSize, cv2.CALIB_CB_ADAPTIVE_THRESH | cv2.CALIB_CB_FAST_CHECK | cv2.CALIB_CB_NORMALIZE_IMAGE)
     # If found, add object points, image points (after refining them)
@@ -73,10 +73,23 @@ for frame_img in allimages:
 
 cv2.destroyAllWindows()
 # Determine the new values for different parameters
-mse, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpointsL, grayL.shape[::-1],None,None)
-print('MSE',mse)
-proj_err_L = projectPointsErr(objpoints,imgpointsL, rvecs, tvecs, mtx, dist)
-print("Mean reprojection error: ", mean(proj_err_L))
-print("STD reprojection error: ", stddev(proj_err_R))
-hL,wL= grayL.shape[:2]
-OmtxL, roiL= cv2.getOptimalNewCameraMatrix(mtxL,distL,(wL,hL),1,(wL,hL))
+rms, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpointsL, grayL.shape[::-1],None,None)
+print('RMS',rms)
+proj_err = projectPointsErr(objpoints,imgpointsL, rvecs, tvecs, mtx, dist)
+print("Mean reprojection error: ", mean(proj_err))
+print("STD reprojection error: ", stddev(proj_err))
+h,w= grayL.shape[:2]
+newcameramtx, roiL= cv2.getOptimalNewCameraMatrix(mtx,distL,(w,h),1,(w,h))
+# Get the undistort matrix
+mapx,mapy = cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
+#mapx,mapy = cv2.initUndistortRectifyMap(mtx, dist, ,None,newcameramtx, grayL.shape[::-1], cv2.CV_16SC2) 
+#Write json file
+j['mapx'] = mapx
+j['mapy'] = mapy
+if json_file is not None:
+    json.dump(j, open(json_file, 'wt'))
+ # Get undistortion image
+undis_img= cv2.remap(test_img,mapx,mapy,cv2.INTER_LINEAR)
+#undis_img = cv2.remap(test_img,mapx,mapy, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
+cv2.imshow('Both Images', resized_img(np.hstack([test_img, undis_img]),30))
+cv2.waitkey(0)
