@@ -10,7 +10,10 @@ git clone https://github.com/RVGroup-CTUT/Camera_Calibration.git
 ### 2. Install dependencies
 
 ``` python
-pip install -r requirements.txt or pip3 install -r requirements.txt
+pip install -r requirements.txt```
+or 
+```
+pip3 install -r requirements.txt
 ```
 ### 3. Tutorials
 
