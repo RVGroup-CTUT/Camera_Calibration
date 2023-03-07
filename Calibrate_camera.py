@@ -56,4 +56,20 @@ for frame_img in allimages:
     imgL = imgL_g.copy()
     grayL =imgL
     # Find the chess board corners
-    retL, cornersL = cv.findChessboardCorners(grayL, chessboardSize, cv2.CALIB_CB_ADAPTIVE_THRESH | cv2.CALIB_CB_FAST_CHECK | cv2.CALIB_CB_NORMALIZE_IMAGE)
+    retL, cornersL = cv2.findChessboardCorners(grayL, chessboardSize, cv2.CALIB_CB_ADAPTIVE_THRESH | cv2.CALIB_CB_FAST_CHECK | cv2.CALIB_CB_NORMALIZE_IMAGE)
+    # If found, add object points, image points (after refining them)
+    if retL == True:
+        print(frame_img)
+        objpoints.append(objp)
+        cornersL = cv2.cornerSubPix(grayL, cornersL, (11,11), (-1,-1), criteria)
+        imgpointsL.append(cornersL)
+        # Draw and display the corners
+        cv2.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
+        cv2.imshow('img left', resized_img(imgL,15))
+        cv2.waitKey(1)
+    else: 
+        print("Cannot detection")
+        print(frame_img)
+
+cv2.destroyAllWindows()
+
