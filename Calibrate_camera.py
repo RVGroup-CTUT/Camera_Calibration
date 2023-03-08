@@ -1,14 +1,14 @@
 import numpy as np
-import cv2 as cv
+import cv2 
 import glob
 import json, os
 from utilities import resized_img, projectPointsErr, mean, stddev
 ######## Path direction #######################
-image_dir = "IMG_VIEWS"
+image_dir = "IMG"
 current_dir = os.getcwd()
 image_savepath = os.path.join(current_dir, image_dir)
 json_file = "data.json"
- j = {}
+j = {}
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 # size of chessboard 
 chessboardSize = (10,7)
@@ -24,7 +24,7 @@ objpoints = [] # 3d point in real world space
 imgpointsL = [] # 2d points in image plane.
 imgpointsR = [] # 2d points in image plane.
 # Load and sort all images
-allimages = sorted(glob.glob(image_savepath + '/' + '*.jpg'))
+allimages = sorted(glob.glob(image_savepath + '/' + '*.png'))
 for frame_img in allimages:
     imgL_g = cv2.imread(frame_img,0)
     imgL = imgL_g.copy()
@@ -54,7 +54,7 @@ proj_err = projectPointsErr(objpoints,imgpointsL, rvecs, tvecs, mtx, dist)
 print("Mean reprojection error: ", mean(proj_err))
 print("STD reprojection error: ", stddev(proj_err))
 h,w= grayL.shape[:2]
-newcameramtx, roiL= cv2.getOptimalNewCameraMatrix(mtx,distL,(w,h),1,(w,h))
+newcameramtx, roiL= cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
 # Get the undistort matrix
 mapx,mapy = cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
 #mapx,mapy = cv2.initUndistortRectifyMap(mtx, dist, ,None,newcameramtx, grayL.shape[::-1], cv2.CV_16SC2) 
