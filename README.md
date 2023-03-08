@@ -1,5 +1,41 @@
 # Camera_Calibration
 
+## Git tutorial
+
+### 1. Firstly, we need to "pull" the code before "pushing"
+
+```python
+git init
+git pull
+```
+
+### 2. Secondly, we adđ all changed code.
+
+```python
+git add .
+```
+
+### 3. Then, you up to code the git's repository.
+
+```python
+git commit -m "name: depend on you"
+```
+
+### 4. Finally,you use the code to push all of them to your repository.
+
+```python
+git push -f  origin main
+```
+
+or
+
+```python 
+git push -f  origin master
+```
+
+-> choosing "main" or "master" based on the type of brach . 
+
+
 ## Installation
 
 ### 1. Clone this repository
