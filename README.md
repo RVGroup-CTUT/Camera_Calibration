@@ -2,14 +2,14 @@
 
 ## Git tutorial
 
-### 1. First, we need to "pull" the code before "pushing"
+### 1. Firstly, we need to "pull" the code before "pushing"
 
 ```python
 git init
 git pull
 ```
 
-### 2. Second, we add all changed code.
+### 2. Secondly, we add all changed code.
 
 ```python
 git add .
@@ -21,7 +21,7 @@ git add .
 git commit -m "name: depending on you"
 ```
 
-### 4. Final, you use the code to push all of them to your repository.
+### 4. Finally, you use the code to push all of them to your repository.
 
 ```python
 git push -f  origin main
