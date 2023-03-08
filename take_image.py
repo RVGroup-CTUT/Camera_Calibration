@@ -30,4 +30,5 @@ while cap.isOpened():
     cv2.imshow("img",frame)
 cap.release()
 cv2.destroyAllWindows()
-"Thethinh"
+" The thinh "
+"SI lam"
