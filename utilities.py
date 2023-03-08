@@ -28,3 +28,4 @@ def mean(data):
 def stddev(data): 
     squared_data = [x*x for x in data] 
     return (mean(squared_data) - mean(data)**2)**.5 
+# The thinh

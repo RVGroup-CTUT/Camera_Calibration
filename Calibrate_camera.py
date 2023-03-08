@@ -12,7 +12,7 @@ j = {}
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 # size of chessboard 
 chessboardSize = (10,7)
-size_of_chessboard_squares_mm = 5
+size_of_chessboard_squares_mm = 8
 # termination criteria
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
