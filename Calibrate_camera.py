@@ -2,13 +2,23 @@ import numpy as np
 import cv2 
 import glob
 import json, os
-from utilities import resized_img, projectPointsErr, mean, stddev
+from utils import resized_img, projectPointsErr, mean, stddev
+import argparse
 ######## Path direction #######################
 image_dir = "IMG"
 current_dir = os.getcwd()
-image_savepath = os.path.join(current_dir, image_dir)
+path = os.path.join(current_dir, image_dir)
 json_file = "data.json"
 j = {}
+# GET PATH INPUT AND OUTPUT
+parser = argparse.ArgumentParser("Code processing")
+parser.add_argument("-i", "--input", help="path of image", type=str, default= path)
+parser.add_argument("-o", "--output", help="direction of output", type=str, default= None)
+args = parser.parse_args()
+image_savepath = args.input
+path_out = args.output
+if not os.path.exists(path_out):
+    os.mkdir(path_out)
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 # size of chessboard 
 chessboardSize = (10,7)
@@ -40,7 +50,7 @@ for frame_img in allimages:
         imgpointsL.append(cornersL)
         # Draw and display the corners
         cv2.drawChessboardCorners(imgL, chessboardSize, cornersL, retL)
-        cv2.imshow('img left', resized_img(imgL,15))
+        cv2.imshow('img left', resized_img(imgL,100))
         cv2.waitKey(1)
     else: 
         print("Cannot detection")
@@ -51,20 +61,45 @@ cv2.destroyAllWindows()
 rms, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpointsL, grayL.shape[::-1],None,None)
 print('RMS',rms)
 proj_err = projectPointsErr(objpoints,imgpointsL, rvecs, tvecs, mtx, dist)
-print("Mean reprojection error: ", mean(proj_err))
-print("STD reprojection error: ", stddev(proj_err))
+print("Mean reprojection error: ", proj_err)
 h,w= grayL.shape[:2]
 newcameramtx, roiL= cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
+#-------------------------------------Way 1 ------------------
+undis_img1 = cv2.undistort(test_img, mtx, dist, None, newcameramtx)
+cv2.imshow('Both Images1', resized_img(np.hstack([test_img, undis_img1]),100))
+cv2.imwrite("img1.png",undis_img1)
+cv2.waitKey(0)
+#---------------------- WAY 2----------------------
 # Get the undistort matrix
 mapx,mapy = cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
 #mapx,mapy = cv2.initUndistortRectifyMap(mtx, dist, ,None,newcameramtx, grayL.shape[::-1], cv2.CV_16SC2) 
-#Write json file
-j['mapx'] = mapx
-j['mapy'] = mapy
-if json_file is not None:
-    json.dump(j, open(json_file, 'wt'))
- # Get undistortion image
-undis_img= cv2.remap(test_img,mapx,mapy,cv2.INTER_LINEAR)
+# Get undistortion image
+undis_img2= cv2.remap(test_img,mapx,mapy,cv2.INTER_LINEAR)
 #undis_img = cv2.remap(test_img,mapx,mapy, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
-cv2.imshow('Both Images', resized_img(np.hstack([test_img, undis_img]),30))
-cv2.waitkey(0)
+cv2.imshow('Both Images', resized_img(np.hstack([test_img, undis_img2]),100))
+cv2.imwrite("img2.png",undis_img2)
+cv2.waitKey(0)
+
+print("Saving parameters!")
+cv_file = cv2.FileStorage(path_out + "/"+ 'parmeters.txt', cv2.FILE_STORAGE_WRITE)
+cv_file.write('mapx', mapx)
+cv_file.write('mapy', mapy)
+cv_file.write('mtx', mtx)
+cv_file.write('dist', dist)
+cv_file.release()
+#Write json file
+# Extend the JSONEncoder class
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+j['mtx'] = mtx
+j['dist'] = dist
+if json_file is not None:
+    json.dump(j, open(path_out + "/" + json_file, 'wt'), cls=NumpyEncoder)
+print("STD reprojection error: ", mean(proj_err))
