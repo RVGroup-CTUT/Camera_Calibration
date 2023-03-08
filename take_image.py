@@ -30,5 +30,6 @@ while cap.isOpened():
     cv2.imshow("img",frame)
 cap.release()
 cv2.destroyAllWindows()
-" The thinh "
-"SI lam"
+#" The thinh "
+#"SI lam"
+# Nguyễn Văn A
