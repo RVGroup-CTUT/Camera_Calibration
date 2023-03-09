@@ -11,7 +11,7 @@ Z=cameraParams.TranslationVectors(num_image,3);
 [imagePoints] = detectCheckerboardPoints(name_image);
 %Choose 2 numbers of imagePoints which you want to calculate distance
 FirstPoint = 6;
-SecondPoint = 7;
+SecondPoint = 3;
 
 P1=[imagePoints(FirstPoint,:),1]';%Image position - pixel
 m1=inv(T)*Z*P1;%Real position - mm 
