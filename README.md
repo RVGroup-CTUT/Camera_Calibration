@@ -9,19 +9,19 @@ git init
 git pull
 ```
 
-### 2. Secondly, we adđ all changed code.
+### 2. Secondly, we add all changed code.
 
 ```python
 git add .
 ```
 
-### 3. Then, you up to code the git's repository.
+### 3. Then, you upload the code to the git's repository.
 
 ```python
-git commit -m "name: depend on you"
+git commit -m "name: depending on you"
 ```
 
-### 4. Finally,you use the code to push all of them to your repository.
+### 4. Finally, you use the code to push all of them to your repository.
 
 ```python
 git push -f  origin main
@@ -33,7 +33,7 @@ or
 git push -f  origin master
 ```
 
--> choosing "main" or "master" based on the type of brach . 
+-> choosing "main" or "master" based on the type of branch . 
 
 
 ## Installation
